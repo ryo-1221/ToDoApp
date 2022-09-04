@@ -1,0 +1,95 @@
+body {
+  margin: 0;
+  width: 100%;
+  min-width: 1000px;
+}
+
+.header {
+  background-color: aqua;
+  margin: 0;
+  height: 8vh;
+}
+.react-icons {
+  vertical-align: middle;
+}
+.home {
+  /* background-color: rgba(110, 80, 56, 0.8); */
+  min-height: 90vh;
+  display: flex;
+}
+
+.list,
+.add-list {
+  width: 250px;
+  height: fit-content;
+  margin: 5px 0px 5px 5px;
+  padding: 10px 0px;
+  background-color: #f5f5db;
+  border-radius: 2px;
+}
+.add-list {
+  text-align: center;
+  background-color: rgba(245, 245, 220, 0.8);
+}
+
+.list-name {
+  padding: 5px 5px 5px 10px;
+  font-weight: 600;
+}
+
+.task {
+  margin: 5px 3px;
+  padding: 10px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 3px 3px 4px -3px #777777;
+  border-radius: 2px;
+}
+/* マウスオーバー時 */
+.task:hover {
+  background-color: rgba(170, 168, 168, 0.5);
+}
+.task-title::after {
+  border-bottom: 2px solid $input-border-color-active !important;
+  :hover {
+    border-bottom: none !important;
+  }
+}
+.task-title::before {
+  border-bottom: none !important;
+}
+.add-task-button:hover {
+  background-color: rgba(170, 168, 168, 0.5);
+}
+
+.rdw-option-wrapper {
+  margin: 0 1px !important;
+}
+
+.rdw-block-wrapper {
+  margin: 0 1px 3px 1px !important;
+}
+.rdw-fontsize-wrapper {
+  margin: 0 1px 3px 1px !important;
+}
+.rdw-dropdown-wrapper {
+  margin: 0 1px 3px 1px !important;
+}
+.rdw-link-wrapper {
+  margin: 0 1px 3px 1px !important;
+}
+.rdw-editor-toolbar {
+}
+.rdw-block-dropdown {
+  width: 80px !important;
+}
+.editor-class {
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.87);
+  -webkit-transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
+  padding: 5px 16px 16px 16px;
+  /* min-height: 55vh; */
+}
