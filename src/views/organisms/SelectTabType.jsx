@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
+import { tokenContext } from '../../App';
 import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import { request } from '../axios/request.jsx';
 
 import Box from '@mui/material/Box';
 import ArticleIcon from '@mui/icons-material/Article.js';
@@ -12,8 +12,13 @@ import DeleteIcon from '@mui/icons-material/Delete.js';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline.js';
 import Stack from '@mui/material/Stack';
 
+import { request } from '../../axios/request';
+import BoolAlert from '../atoms/BoolAlert';
+
 const SelectTabType = (props) => {
   const { addNote, tabsData, getTabIcon, setTabsData } = { ...props };
+  // Cognito認証トークン
+  const token = useContext(tokenContext);
   // const addNote = props.addNote;
   console.log(tabsData);
 
@@ -26,6 +31,7 @@ const SelectTabType = (props) => {
       type: tab.type,
     };
     const result = await request({
+      token: token,
       method: 'put',
       path: `todo/tabName/${tab.tab_id}`,
       data: data,
@@ -36,16 +42,11 @@ const SelectTabType = (props) => {
   };
 
   const handleDeleteTab = async (tab, tabIndex) => {
-    console.log('aa');
     // タブ削除
-    const data = {
-      type: tab.type,
-      tab_title: 'ss',
-    };
     const result = await request({
+      token: token,
       method: 'delete',
-      path: `todo/tab/${tab.tab_id}`,
-      data: data,
+      path: `todo/tab/${tab.type}/${tab.tab_id}`,
     });
     const newTabsData = [...tabsData];
     newTabsData.splice(tabIndex, 1);
@@ -80,7 +81,18 @@ const SelectTabType = (props) => {
               <Grid item xs={2}>
                 <Box sx={{ mt: 0.5, mr: 1, textAlign: 'right' }}>
                   {/* <button onClick={() => handleDeleteTab(tab, tabIndex)}>aa</button> */}
-                  {tabIndex != 0 ? <DeleteOutlineIcon onClick={() => handleDeleteTab(tab, tabIndex)} /> : null}
+                  {tabIndex != 0 ? (
+                    // <DeleteOutlineIcon onClick={() => handleDeleteTab(tab, tabIndex)} />
+                    <BoolAlert
+                      buttonComponent={<DeleteOutlineIcon />}
+                      AlertTitle={'削除してよろしいですか？'}
+                      AlertContent={''}
+                      yesText={'はい'}
+                      yesFunction={() => handleDeleteTab(tab, tabIndex)}
+                      noText={'キャンセル'}
+                      // noFunction={() => handleClose(taskIndex)}
+                    />
+                  ) : null}
                 </Box>
               </Grid>
             </Grid>

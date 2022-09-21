@@ -1,11 +1,10 @@
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
-import Card from './Card.jsx';
-import '../css/main.css';
 import TaskDetailModal from './TaskDetailModal.jsx';
+import Card from '../atoms/Card.jsx';
 
-function Tasks({ list }) {
+function Tasks({ list, getTodoData }) {
   const theme = useTheme();
   const [listData, setListData] = React.useState(list);
 
@@ -20,6 +19,8 @@ function Tasks({ list }) {
     listData['tasks'][taskIndex].open = false;
     setListData({ ...listData });
     console.log(`handleClose! taskIndex:${taskIndex}`);
+    // データ再取得
+    getTodoData();
   };
 
   return (
