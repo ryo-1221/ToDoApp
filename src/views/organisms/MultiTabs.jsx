@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
+import { tokenContext } from '../../App';
 import { useTheme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
@@ -6,9 +7,9 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import NoteField from './NoteField';
+import NoteField from '../atoms/NoteField';
 import SelectTabType from './SelectTabType';
-import { request } from '../axios/request.jsx';
+import { request } from '../../axios/request';
 
 import EditIcon from '@mui/icons-material/Edit';
 import ArticleIcon from '@mui/icons-material/Article';
@@ -18,6 +19,8 @@ const TaskDetailModal = (props) => {
   const [tabsData, setTabsData] = React.useState(task.tabsData);
   const [value, setValue] = React.useState(tabsData[0].tab_id);
   const theme = useTheme();
+  // Cognito認証トークン
+  const token = useContext(tokenContext);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -29,7 +32,6 @@ const TaskDetailModal = (props) => {
     }
   };
   const getTabIcon = (type) => {
-    console.log(type);
     if (type === 'note') return <ArticleIcon />;
   };
   const addNote = async () => {
@@ -38,7 +40,7 @@ const TaskDetailModal = (props) => {
     // console.log(data);
     // 新規ノートを追加
     console.log(`addNote:新規ノートを追加`);
-    const result = await request({ method: 'post', path: 'todo/note', data: data });
+    const result = await request({ token: token, method: 'post', path: 'todo/note', data: data });
     console.log(result);
     const newTabsData = {
       task_id: result.task_id,

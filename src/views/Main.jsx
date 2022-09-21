@@ -1,28 +1,33 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { tokenContext } from '../App';
 import axios from 'axios';
-import Header from './Header';
+import Header from './organisms/Header';
 
 import { useState, useEffect } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import Tasks from './Tasks.jsx';
+import Tasks from './organisms/Tasks.jsx';
 import data from '../data/dataset.js';
 import { MdPlaylistAdd } from 'react-icons/md';
-import { TextField } from '@mui/material';
-
+import { Grid, TextField } from '@mui/material';
 import '../css/main.css';
 import { request } from '../axios/request.jsx';
+import ListOptionButton from './organisms/ListOptionButton';
 
-function Main() {
+function Main(props) {
   const [todoData, setTodoData] = useState([]);
+  // Cognito認証トークン
+  const token = useContext(tokenContext);
 
   // 全体データ取得
   const getTodoData = async () => {
-    // データ初期化
-    setTodoData([]);
     // HTTPリクエスト
     console.log(`getTodoData:全体データ取得`);
-    const result = await request({ method: 'get', path: 'todo' });
-    setTodoData(result.todoData);
+    const result = await request({ token: token, method: 'get', path: 'todo' });
+    console.log(result.todoData);
+    const newTodoData = result.todoData;
+    // 初期化
+    setTodoData([]);
+    setTodoData(newTodoData);
   };
 
   // 初期表示
@@ -65,6 +70,7 @@ function Main() {
       listTitle: e.target.value,
     };
     const result = await request({
+      token: token,
       method: 'put',
       path: `todo/listName/${id}`,
       data: data,
@@ -76,6 +82,7 @@ function Main() {
     // HTTPリクエスト
     console.log(`handleAddListClick:リスト追加`);
     const result = await request({
+      token: token,
       method: 'post',
       path: `todo/list`,
     });
@@ -93,9 +100,23 @@ function Main() {
       list_id: list_id,
     };
     const result = await request({
+      token: token,
       method: 'post',
       path: `todo/task`,
       data: data,
+    });
+    console.log(result);
+    //データ再読み込み
+    getTodoData();
+  };
+
+  // リスト削除ボタン押下時の処理
+  const handleDeleteList = async (list_id) => {
+    console.log('handleDeleteList:リスト削除');
+    const result = await request({
+      token: token,
+      method: 'delete',
+      path: `todo/list/${list_id}`,
     });
     //データ再読み込み
     getTodoData();
@@ -104,7 +125,7 @@ function Main() {
   return (
     <div>
       {/* <div className="header">todo-app</div> */}
-      <Header />
+      <Header signOut={props.signOut} />
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable key={'droppable'} droppableId={'droppable'} type="LIST" direction="horizontal">
           {(provided) => (
@@ -125,25 +146,36 @@ function Main() {
                             cursor: 'default',
                           }}
                         >
-                          {/* リスト名表示 */}
-                          <span className="list-name">
-                            <TextField
-                              id="standard-basic"
-                              variant="standard"
-                              defaultValue={list.list_title}
-                              onBlur={(e) => handleBlur(e, list.id)}
-                            />
-                          </span>
-                          <span
+                          <Grid container>
+                            {/* リスト名表示 */}
+                            <Grid item xs={10}>
+                              <TextField
+                                id="standard-basic"
+                                variant="standard"
+                                fullWidth
+                                defaultValue={list.list_title}
+                                onBlur={(e) => handleBlur(e, list.id)}
+                                sx={{ padding: '5px 5px 5px 10px' }}
+                              />
+                            </Grid>
+                            {/* <span
                             style={{
                               float: 'right',
                               marginRight: '10px',
                             }}
                             onClick={() => handleAddTask(list.id)}
-                          >
-                            <MdPlaylistAdd className="add-task-button" size={25} />
-                          </span>
-                          <Tasks list={list} />
+                          > */}
+                            {/* <MdPlaylistAdd className="add-task-button" size={25} /> */}
+                            {/* </span> */}
+                            <Grid item xs={2}>
+                              <ListOptionButton
+                                list={list}
+                                handleAddTask={handleAddTask}
+                                handleDeleteList={handleDeleteList}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Tasks list={list} getTodoData={getTodoData} />
                         </div>
                       )}
                     </Draggable>

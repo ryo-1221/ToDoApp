@@ -32,11 +32,6 @@ body {
   background-color: rgba(245, 245, 220, 0.8);
 }
 
-.list-name {
-  padding: 5px 5px 5px 10px;
-  font-weight: 600;
-}
-
 .task {
   margin: 5px 3px;
   padding: 10px;
